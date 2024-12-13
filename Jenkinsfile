@@ -39,5 +39,27 @@ pipeline {
                 '''
             }
         }
+
+    stages {
+        stage('Deploy') {
+            agent{
+                docker{
+                    image 'node:18-alpine'
+                    reuseNode true
+                }
+            }
+            steps {
+                sh '''
+                    npm install netlifly-cli -g
+                    netlifly --version
+                '''
+            }
+        }
+
+        post {
+            always {
+                junit 'test-results/junit.xml'
+            }
+        }
     }
 }
